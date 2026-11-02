@@ -20,6 +20,17 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Authentication setup
+
+Authentication uses Better Auth with its MongoDB adapter. Copy `.env.example` to
+`.env.local`, set `MONGODB_URI`, and replace `BETTER_AUTH_SECRET` with a random
+secret of at least 32 characters. Set `BETTER_AUTH_URL` to the app's origin.
+
+Google sign-in is enabled when both `GOOGLE_CLIENT_ID` and
+`GOOGLE_CLIENT_SECRET` are set. Configure the Google OAuth redirect URI as
+`<BETTER_AUTH_URL>/api/auth/callback/google`. Email verification and password
+reset are intentionally not enabled.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

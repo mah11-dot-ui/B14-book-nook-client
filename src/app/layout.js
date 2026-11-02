@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/footer/Footer";
 
 const geistSans = Inter({
   variable: "--font-inter",
@@ -19,7 +20,8 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <Navbar />
-        {children}
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
