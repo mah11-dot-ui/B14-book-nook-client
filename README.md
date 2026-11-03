@@ -22,9 +22,18 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Authentication setup
 
-Authentication uses Better Auth with its MongoDB adapter. Copy `.env.example` to
-`.env.local`, set `MONGODB_URI`, and replace `BETTER_AUTH_SECRET` with a random
-secret of at least 32 characters. Set `BETTER_AUTH_URL` to the app's origin.
+Authentication uses Better Auth with its MongoDB adapter. Add the following
+variables to `.env.local`, replacing the examples with your own values:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/booknook
+BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
+BETTER_AUTH_URL=http://localhost:3000
+```
+
+For MongoDB Atlas, use the `mongodb+srv://` connection string from your Atlas
+cluster. `MONGODB_URI` must start with `mongodb://` or `mongodb+srv://`. Restart
+the Next.js server after changing environment variables.
 
 Google sign-in is enabled when both `GOOGLE_CLIENT_ID` and
 `GOOGLE_CLIENT_SECRET` are set. Configure the Google OAuth redirect URI as
