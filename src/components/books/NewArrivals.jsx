@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { bookApi } from "@/lib/book-api";
 
 const NewArrivals = () => {
     const [books, setBooks] = useState([]);
@@ -10,24 +11,8 @@ const NewArrivals = () => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        fetch("/book.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Failed to load books (${response.status})`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                if (!Array.isArray(data)) {
-                    throw new Error("Book data must be an array");
-                }
-
-                setBooks(
-                    [...data]
-                        .sort((first, second) => second.bookId - first.bookId)
-                        .slice(0, 6),
-                );
-            })
+        bookApi("/books")
+            .then((data) => setBooks(data.slice(0, 6)))
             .catch((fetchError) => {
                 console.error("Unable to load new arrivals:", fetchError);
                 setError(true);
@@ -70,14 +55,15 @@ const NewArrivals = () => {
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {books.map((book) => (
                         <article
-                            key={book.bookId}
+                            key={book.id}
                             className="overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-md"
                         >
                             <div className="relative h-56 bg-muted">
                                 <Image
                                     src={book.image}
-                                    alt={`Cover of ${book.bookName}`}
+                                    alt={`Cover of ${book.title}`}
                                     fill
+                                    unoptimized
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                     className="object-cover"
                                 />
@@ -87,22 +73,16 @@ const NewArrivals = () => {
                                     {book.category}
                                 </p>
                                 <h3 className="mt-2 line-clamp-1 text-lg font-semibold">
-                                    {book.bookName}
+                                    {book.title}
                                 </h3>
                                 <p className="mt-1 text-sm text-muted-foreground">
                                     by {book.author}
                                 </p>
-                                <div className="mt-4 flex items-center justify-between">
-                                    <p className="font-semibold">Price: {book.price}</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        {book.rating} / 5 ({book.totalReviews} reviews)
-                                    </p>
-                                </div>
                                 <Link
-                                    href={`/borrow/${book.bookId}`}
+                                    href={`/books/${book.id}`}
                                     className="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-[#290044] px-4 py-2.5 font-semibold text-white transition-colors hover:bg-[#500071]"
                                 >
-                                    Borrow
+                                    View Details
                                 </Link>
                             </div>
                         </article>

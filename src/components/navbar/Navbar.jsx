@@ -3,7 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import ThemeToggle from "@/components/navbar/ThemeToggle";
 import "./Navbar.css";
 
 const privateLinks = [
@@ -16,6 +18,7 @@ const Navbar = () => {
     const router = useRouter();
     const { data: session } = authClient.useSession();
     const user = session?.user;
+    const [failedPhotoUrl, setFailedPhotoUrl] = useState("");
 
     async function handleSignOut() {
         const { error } = await authClient.signOut();
@@ -29,7 +32,7 @@ const Navbar = () => {
     const NavItems = (
         <>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/all-books">All Books</Link></li>
+            <li><Link href="/books">All Books</Link></li>
             {user &&
                 privateLinks.map(({ href, label }) => (
                     <li key={href}><Link href={href}>{label}</Link></li>
@@ -67,6 +70,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="navbar-end gap-2">
+                    <ThemeToggle />
                     {user ? (
                         <details className="dropdown dropdown-end">
                             <summary
@@ -74,7 +78,7 @@ const Navbar = () => {
                                 aria-label="Open account menu"
                             >
                                 <span className="flex size-10 items-center justify-center overflow-hidden rounded-full bg-[#290044] font-semibold text-white">
-                                    {user.image ? (
+                                    {user.image && user.image !== failedPhotoUrl ? (
                                         <Image
                                             src={user.image}
                                             alt=""
@@ -82,6 +86,7 @@ const Navbar = () => {
                                             height={40}
                                             unoptimized
                                             className="size-full object-cover"
+                                            onError={() => setFailedPhotoUrl(user.image)}
                                         />
                                     ) : (
                                         user.name?.charAt(0)?.toUpperCase() || "U"

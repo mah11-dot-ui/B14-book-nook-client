@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
+import { ToastProvider } from "@/components/feedback/ToastProvider";
 
 const geistSans = Inter({
   variable: "--font-inter",
@@ -9,7 +10,10 @@ const geistSans = Inter({
 });
 
 export const metadata = {
-  title: "Book Nook",
+  title: {
+    default: "BookNook",
+    template: "BookNook | %s",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -19,9 +23,11 @@ export default function RootLayout({ children }) {
       className={`${geistSans.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ToastProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

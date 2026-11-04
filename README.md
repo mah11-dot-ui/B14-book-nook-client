@@ -29,11 +29,20 @@ variables to `.env.local`, replacing the examples with your own values:
 MONGODB_URI=mongodb://127.0.0.1:27017/booknook
 BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
 BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
 For MongoDB Atlas, use the `mongodb+srv://` connection string from your Atlas
 cluster. `MONGODB_URI` must start with `mongodb://` or `mongodb+srv://`. Restart
-the Next.js server after changing environment variables.
+the app after changing environment variables. Run the website with `npm run
+dev` in this project (`http://localhost:3000`) and the existing Express API
+with `npm run dev` in `book-nook-server` (`http://localhost:5000`). Configure
+the API server's `.env` using `book-nook-server/.env.example`; its Better Auth
+secret and MongoDB URI must match this app's values. Set `IMGBB_API_KEY` in the
+API server's `.env` to enable cover uploads. `NEXT_PUBLIC_API_URL` points the
+website at that API. The API exposes the book and borrow routes implemented in
+`book-nook-server/index.js`; borrowed books can also be returned with
+`DELETE /borrows/:id`.
 
 Google sign-in is enabled when both `GOOGLE_CLIENT_ID` and
 `GOOGLE_CLIENT_SECRET` are set. Configure the Google OAuth redirect URI as

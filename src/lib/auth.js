@@ -72,16 +72,19 @@ export function getAuth() {
             : {},
         hooks: {
             before: createAuthMiddleware(async (context) => {
-                if (context.path !== "/sign-up/email") {
-                    return;
-                }
+                const password =
+                    context.path === "/sign-up/email"
+                        ? context.body?.password
+                        : context.path === "/change-password"
+                          ? context.body?.newPassword
+                          : undefined;
 
-                const password = context.body?.password;
                 if (
-                    typeof password !== "string" ||
-                    password.length < 6 ||
-                    !/[A-Z]/.test(password) ||
-                    !/[a-z]/.test(password)
+                    password !== undefined &&
+                    (typeof password !== "string" ||
+                        password.length < 6 ||
+                        !/[A-Z]/.test(password) ||
+                        !/[a-z]/.test(password))
                 ) {
                     throw new APIError("BAD_REQUEST", {
                         message:
