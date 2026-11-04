@@ -53,7 +53,7 @@ const HomeHighlights = () => (
                     {categories.map((category) => (
                         <li
                             key={category.name}
-                            className="rounded-xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
+                            className="rounded-xl border bg-card p-5 shadow-sm"
                         >
                             <h3 className="font-semibold">{category.name}</h3>
                             <p className="mt-2 text-sm text-muted-foreground">
@@ -93,8 +93,7 @@ const HomeHighlights = () => (
             </div>
             <Link
                 href="/books"
-                className="mt-7 inline-flex items-center gap-2 font-semibold text-[#7b4a32] hover:underline dark:text-[#d7a47d]"
-            >
+                className="mt-7 inline-flex items-center gap-2 font-semibold text-[#7b4a32] hover:underline dark:text-[#d7a47d]"            >
                 Browse all books
                 <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
