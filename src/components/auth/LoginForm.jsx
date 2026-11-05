@@ -1,17 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getSafeRedirectPath } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/auth-client";
 
-const LoginForm = ({ callbackUrl, registered }) => {
-    const router = useRouter();
+const getSocialAuthError = (errorCode) => {
+    if (errorCode === "invalid_code") {
+        return "Google sign-in could not be completed. Check the Google OAuth redirect URI and try again.";
+    }
+    if (errorCode) {
+        return "Google sign-in could not be completed. Please try again.";
+    }
+    return "";
+};
+
+const LoginForm = ({ callbackUrl, registered, authError }) => {
     const redirectPath = getSafeRedirectPath(callbackUrl);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState(() => getSocialAuthError(authError));
     const [notice, setNotice] = useState(
         registered ? "Account created. Log in to continue." : "",
     );
@@ -35,8 +43,7 @@ const LoginForm = ({ callbackUrl, registered }) => {
                 return;
             }
 
-            router.replace(redirectPath);
-            router.refresh();
+            window.location.replace(redirectPath);
         } catch (loginError) {
             setError(loginError.message || "Unable to log in. Please try again.");
         } finally {
@@ -52,6 +59,7 @@ const LoginForm = ({ callbackUrl, registered }) => {
             const result = await authClient.signIn.social({
                 provider: "google",
                 callbackURL: `${window.location.origin}${redirectPath}`,
+                errorCallbackURL: `${window.location.origin}/login?callbackUrl=${encodeURIComponent(redirectPath)}`,
             });
 
             if (result.error) {

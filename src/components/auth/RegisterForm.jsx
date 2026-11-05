@@ -7,13 +7,23 @@ import { authClient } from "@/lib/auth-client";
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{6,128}$/;
 
-const RegisterForm = () => {
+const getSocialAuthError = (errorCode) => {
+    if (errorCode === "invalid_code") {
+        return "Google sign-up could not be completed. Check the Google OAuth redirect URI and try again.";
+    }
+    if (errorCode) {
+        return "Google sign-up could not be completed. Please try again.";
+    }
+    return "";
+};
+
+const RegisterForm = ({ authError }) => {
     const router = useRouter();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [image, setImage] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState(() => getSocialAuthError(authError));
     const [loading, setLoading] = useState(false);
 
     async function handleSubmit(event) {
@@ -56,6 +66,7 @@ const RegisterForm = () => {
             const result = await authClient.signIn.social({
                 provider: "google",
                 callbackURL: `${window.location.origin}/`,
+                errorCallbackURL: `${window.location.origin}/register`,
             });
             if (result.error) {
                 setError(result.error.message || "Google sign-in is unavailable.");

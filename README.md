@@ -1,65 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BookNook
 
-## Getting Started
+BookNook is an online book discovery and borrowing website where readers can
+explore a catalog, manage the books they contribute, and keep track of their
+borrowed books.
 
-First, run the development server:
+## Live website
+
+[Visit BookNook](https://book-nook-gamma-opal.vercel.app/)
+
+## Features
+
+- Browse the book catalog and open detailed book pages.
+- Discover the six most recently added titles on the homepage.
+- Register and sign in with email and password or Google.
+- Add books with a cover image, author, category, and description.
+- Edit and delete books you have contributed.
+- Borrow books and view or return your active borrows.
+- Update your profile name, photo, and password.
+- Use the responsive interface with light and dark themes.
+- Get loading feedback, form errors, and success notifications.
+
+## Technology
+
+- Next.js and React for the website.
+- Better Auth for email/password and Google authentication.
+- Express and MongoDB for the book and borrow API.
+- ImgBB for uploaded book cover images.
+- Tailwind CSS and DaisyUI for styling.
+
+## Run locally
+
+### Website
+
+Install dependencies and start the Next.js app:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The website runs at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Authentication setup
-
-Authentication uses Better Auth with its MongoDB adapter. Add the following
-variables to `.env.local`, replacing the examples with your own values:
+Create `.env.local` in the website project:
 
 ```env
 MONGODB_URI=mongodb://127.0.0.1:27017/booknook
 BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
 BETTER_AUTH_URL=http://localhost:3000
-NEXT_PUBLIC_API_URL=http://localhost:5000
+BOOK_API_URL=http://localhost:5000
+GOOGLE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
 ```
 
-For MongoDB Atlas, use the `mongodb+srv://` connection string from your Atlas
-cluster. `MONGODB_URI` must start with `mongodb://` or `mongodb+srv://`. Restart
-the app after changing environment variables. Run the website with `npm run
-dev` in this project (`http://localhost:3000`) and the existing Express API
-with `npm run dev` in `book-nook-server` (`http://localhost:5000`). Configure
-the API server's `.env` using `book-nook-server/.env.example`; its Better Auth
-secret and MongoDB URI must match this app's values. Set `IMGBB_API_KEY` in the
-API server's `.env` to enable cover uploads. `NEXT_PUBLIC_API_URL` points the
-website at that API. The API exposes the book and borrow routes implemented in
-`book-nook-server/index.js`; borrowed books can also be returned with
-`DELETE /borrows/:id`.
+### API server
 
-Google sign-in is enabled when both `GOOGLE_CLIENT_ID` and
-`GOOGLE_CLIENT_SECRET` are set. Configure the Google OAuth redirect URI as
-`<BETTER_AUTH_URL>/api/auth/callback/google`. Email verification and password
-reset are intentionally not enabled.
+In the separate `book-nook-server` project, install dependencies and start the
+Express API:
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+The API listens at `http://localhost:5000`. Create its `.env` using
+[`book-nook-server/.env.example`](../book-nook-server/.env.example). Set
+`MONGODB_URI`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `FRONTEND_URL` to
+values matching the website configuration. Set `IMGBB_API_KEY` to enable cover
+image uploads.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The API provides:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `GET /books` and `GET /books/:id`
+- `POST /books`, `PATCH /books/:id`, and `DELETE /books/:id`
+- `POST /borrows`, `GET /borrows`, and `DELETE /borrows/:id`
 
-## Deploy on Vercel
+## Deployment configuration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The website's server-side `BOOK_API_URL` must point to the deployed Express
+API. The current API is
+[`https://book-nook-server-pied.vercel.app`](https://book-nook-server-pied.vercel.app).
+Set `BOOK_API_URL` in the website's Vercel project environment variables, then
+redeploy. Configure Better Auth's production URL as
+`https://book-nook-gamma-opal.vercel.app` and add
+`https://book-nook-gamma-opal.vercel.app/api/auth/callback/google` as an
+authorized redirect URI for the Google OAuth client.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validation
+
+Build the website for production:
+
+```bash
+npm run build
+```

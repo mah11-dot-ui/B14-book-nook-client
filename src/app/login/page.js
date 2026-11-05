@@ -12,6 +12,7 @@ export default async function LoginPage({ searchParams }) {
             <LoginForm
                 callbackUrl={params?.callbackUrl}
                 registered={params?.registered === "1"}
+                authError={params?.error}
             />
         </section>
     );

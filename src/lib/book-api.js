@@ -1,7 +1,7 @@
 export async function bookApi(path, options = {}) {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-    const response = await fetch(new URL(path.replace(/^\//, ""), `${apiBaseUrl}/`), {
-        credentials: "include",
+    const apiPath = path.startsWith("/") ? path : `/${path}`;
+    const response = await fetch(`/api/book-api${apiPath}`, {
+        credentials: "same-origin",
         ...options,
     });
 
